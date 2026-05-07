@@ -1,0 +1,765 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Why Instagram Feels Like It Can Read Your Mind</title>
+  <meta name="description" content="How Instagram's algorithm works and why it feels like it reads your mind."/>
+  <link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+  <style>
+    :root {
+      --paper:   #f5f0e8;
+      --ink:     #1a1208;
+      --muted:   #7a6e5f;
+      --rule:    #d4c9b5;
+      --green:   #2d4a3e;
+      --sienna:  #b85c38;
+      --highlight: #e8e0cc;
+      --col: 680px;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--paper);
+      color: var(--ink);
+      font-family: 'Libre Baskerville', Georgia, serif;
+      font-size: 18px;
+      line-height: 1.75;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ── TOP RULE ── */
+    .top-rule {
+      width: 100%;
+      border-top: 4px solid var(--ink);
+      border-bottom: 1px solid var(--ink);
+      padding: 6px 0;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 8px 48px;
+    }
+
+    .top-rule .pub {
+      font-family: 'Inter', sans-serif;
+      font-weight: 600;
+      font-size: 11px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--ink);
+    }
+
+    .top-rule .section-tag {
+      font-family: 'Inter', sans-serif;
+      font-size: 11px;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    /* ── HEADER ── */
+    header {
+      max-width: var(--col);
+      margin: 0 auto;
+      padding: 72px 24px 48px;
+      border-bottom: 1px solid var(--rule);
+    }
+
+    .kicker {
+      font-family: 'Inter', sans-serif;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--sienna);
+      margin-bottom: 20px;
+      display: block;
+    }
+
+    h1 {
+      font-family: 'Libre Baskerville', serif;
+      font-size: clamp(2.4rem, 5vw, 3.8rem);
+      font-weight: 700;
+      line-height: 1.08;
+      letter-spacing: -0.01em;
+      color: var(--ink);
+      margin-bottom: 28px;
+    }
+
+    h1 em {
+      font-style: italic;
+      color: var(--green);
+    }
+
+    .dek {
+      font-family: 'Inter', sans-serif;
+      font-size: 15px;
+      font-weight: 300;
+      color: var(--muted);
+      line-height: 1.6;
+      max-width: 520px;
+      margin-bottom: 32px;
+    }
+
+    .byline {
+      font-family: 'Inter', sans-serif;
+      font-size: 12px;
+      color: var(--muted);
+      letter-spacing: 0.05em;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .byline .name {
+      font-weight: 600;
+      color: var(--ink);
+    }
+
+    .byline::before {
+      content: '';
+      display: block;
+      width: 28px;
+      height: 1px;
+      background: var(--muted);
+    }
+
+    /* ── MAIN ── */
+    main {
+      max-width: var(--col);
+      margin: 0 auto;
+      padding: 0 24px 120px;
+    }
+
+    /* ── OPENING HOOK ── */
+    .hook {
+      padding: 52px 0 40px;
+      border-bottom: 1px solid var(--rule);
+      margin-bottom: 0;
+    }
+
+    .hook .lede {
+      font-size: 1.2rem;
+      line-height: 1.65;
+      color: var(--ink);
+      margin-bottom: 28px;
+    }
+
+    .hook .lede strong {
+      font-weight: 700;
+    }
+
+    .three-questions {
+      padding: 24px 0 24px 28px;
+      border-left: 3px solid var(--ink);
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      margin: 0;
+    }
+
+    .three-questions span {
+      font-family: 'Inter', sans-serif;
+      font-size: 14px;
+      font-weight: 400;
+      color: var(--muted);
+      letter-spacing: 0.02em;
+    }
+
+    .three-questions span.answer {
+      font-family: 'Libre Baskerville', serif;
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: var(--ink);
+      font-style: italic;
+    }
+
+    /* ── SECTIONS ── */
+    section {
+      padding: 64px 0 0;
+      opacity: 0;
+      transform: translateY(18px);
+      transition: opacity 0.65s ease, transform 0.65s ease;
+      position: relative;
+    }
+
+    section.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* Big editorial number */
+    .section-num {
+      font-family: 'Libre Baskerville', serif;
+      font-size: 5rem;
+      font-weight: 700;
+      color: var(--highlight);
+      line-height: 1;
+      position: absolute;
+      top: 52px;
+      right: -20px;
+      user-select: none;
+      pointer-events: none;
+    }
+
+    .section-label {
+      font-family: 'Inter', sans-serif;
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      color: var(--sienna);
+      margin-bottom: 14px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid var(--rule);
+    }
+
+    h2 {
+      font-family: 'Libre Baskerville', serif;
+      font-size: clamp(1.5rem, 3.5vw, 2rem);
+      font-weight: 700;
+      line-height: 1.18;
+      color: var(--ink);
+      margin-bottom: 24px;
+      max-width: 520px;
+    }
+
+    p {
+      font-size: 1rem;
+      color: #3a3020;
+      margin-bottom: 22px;
+      line-height: 1.78;
+    }
+
+    p:last-child { margin-bottom: 0; }
+
+    /* ── PULL QUOTE ── */
+    .pull-quote {
+      margin: 40px -24px;
+      padding: 32px 40px;
+      background: var(--green);
+      position: relative;
+    }
+
+    .pull-quote p {
+      font-family: 'Libre Baskerville', serif;
+      font-size: 1.25rem;
+      font-style: italic;
+      color: var(--paper);
+      line-height: 1.5;
+      margin: 0;
+    }
+
+    .pull-quote::before {
+      content: '\201C';
+      font-family: 'Libre Baskerville', serif;
+      font-size: 5rem;
+      color: rgba(245,240,232,0.15);
+      position: absolute;
+      top: -10px;
+      left: 20px;
+      line-height: 1;
+    }
+
+    /* ── SIGNAL LIST ── */
+    .signal-list {
+      list-style: none;
+      margin: 28px 0;
+      border-top: 1px solid var(--rule);
+    }
+
+    .signal-list li {
+      display: grid;
+      grid-template-columns: 48px 1fr auto;
+      align-items: center;
+      gap: 16px;
+      padding: 16px 0;
+      border-bottom: 1px solid var(--rule);
+      font-size: 0.9rem;
+      color: #3a3020;
+      font-family: 'Inter', sans-serif;
+    }
+
+    .signal-icon {
+      font-size: 18px;
+      text-align: center;
+    }
+
+    .signal-action { font-weight: 500; }
+
+    .signal-weight {
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--muted);
+      text-align: right;
+    }
+
+    /* ── DATA GRID ── */
+    .data-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      border: 1px solid var(--ink);
+      margin: 32px 0;
+    }
+
+    .data-cell {
+      padding: 20px 24px;
+      border-right: 1px solid var(--rule);
+      border-bottom: 1px solid var(--rule);
+    }
+
+    .data-cell:nth-child(2n) { border-right: none; }
+    .data-cell:nth-child(3), .data-cell:nth-child(4) { border-bottom: none; }
+
+    .data-cell .label {
+      font-family: 'Inter', sans-serif;
+      font-size: 9px;
+      font-weight: 600;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 8px;
+    }
+
+    .data-cell .value {
+      font-family: 'Libre Baskerville', serif;
+      font-size: 1.3rem;
+      font-weight: 700;
+      color: var(--green);
+    }
+
+    /* ── PROB BARS ── */
+    .prob-list {
+      margin: 28px 0;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .prob-item { display: flex; flex-direction: column; gap: 6px; }
+
+    .prob-label {
+      display: flex;
+      justify-content: space-between;
+      font-family: 'Inter', sans-serif;
+      font-size: 13px;
+    }
+
+    .prob-label span:first-child { font-weight: 500; color: var(--ink); }
+    .prob-label span:last-child  { color: var(--muted); font-size: 11px; letter-spacing: 0.05em; }
+
+    .prob-bar-bg {
+      height: 2px;
+      background: var(--rule);
+      width: 100%;
+    }
+
+    .prob-bar-fill {
+      height: 2px;
+      background: var(--sienna);
+      width: 0%;
+      transition: width 1.4s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    section.visible .prob-bar-fill { width: var(--w); }
+
+    /* ── MATH BLOCK ── */
+    .math-block {
+      margin: 32px 0;
+      border-top: 2px solid var(--ink);
+      border-bottom: 2px solid var(--ink);
+    }
+
+    .math-row {
+      display: grid;
+      grid-template-columns: 140px 1fr;
+      gap: 24px;
+      padding: 16px 0;
+      border-bottom: 1px solid var(--rule);
+      align-items: baseline;
+    }
+
+    .math-row:last-child { border-bottom: none; }
+
+    .math-key {
+      font-family: 'Inter', sans-serif;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--sienna);
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+
+    .math-val {
+      font-family: 'Inter', sans-serif;
+      font-size: 13px;
+      color: #3a3020;
+      line-height: 1.5;
+    }
+
+    /* ── FLOW ── */
+    .flow {
+      margin: 32px 0;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .flow-step {
+      padding: 16px 20px;
+      border: 1px solid var(--ink);
+      font-family: 'Inter', sans-serif;
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--ink);
+      background: var(--paper);
+      letter-spacing: 0.01em;
+    }
+
+    .flow-step.accent {
+      background: var(--green);
+      color: var(--paper);
+      border-color: var(--green);
+    }
+
+    .flow-step.sienna {
+      background: var(--sienna);
+      color: var(--paper);
+      border-color: var(--sienna);
+    }
+
+    .flow-arrow {
+      font-size: 13px;
+      color: var(--muted);
+      padding: 5px 20px;
+      font-family: 'Inter', sans-serif;
+    }
+
+    /* ── FINALE ── */
+    .finale {
+      margin-top: 88px;
+      border-top: 4px solid var(--ink);
+      border-bottom: 4px solid var(--ink);
+      padding: 64px 0;
+      text-align: center;
+      position: relative;
+    }
+
+    .finale .kicker { justify-content: center; display: block; text-align: center; }
+
+    .finale h2 {
+      font-size: clamp(1.8rem, 5vw, 3rem);
+      margin: 16px auto 0;
+      max-width: 100%;
+    }
+
+    .big-word {
+      display: block;
+      font-family: 'Libre Baskerville', serif;
+      font-size: clamp(4rem, 14vw, 9rem);
+      font-weight: 700;
+      font-style: italic;
+      color: var(--green);
+      line-height: 0.9;
+      margin: 24px 0 32px;
+      letter-spacing: -0.03em;
+    }
+
+    .finale p {
+      max-width: 440px;
+      margin: 0 auto;
+      font-size: 0.95rem;
+      color: var(--muted);
+    }
+
+    /* ── FOOTER ── */
+    footer {
+      border-top: 1px solid var(--rule);
+      max-width: var(--col);
+      margin: 0 auto;
+      padding: 32px 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    footer p {
+      font-family: 'Inter', sans-serif;
+      font-size: 12px;
+      color: var(--muted);
+      margin: 0;
+    }
+
+    footer a {
+      color: var(--green);
+      text-decoration: none;
+      font-weight: 500;
+    }
+
+    footer a:hover { text-decoration: underline; }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(16px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    header, .hook {
+      opacity: 0;
+      animation: fadeUp 0.7s ease forwards 0.1s;
+    }
+
+    @media (max-width: 600px) {
+      .top-rule { padding: 8px 20px; }
+      header, main { padding-left: 20px; padding-right: 20px; }
+      .pull-quote { margin-left: -20px; margin-right: -20px; }
+      .section-num { display: none; }
+      .data-grid { grid-template-columns: 1fr; }
+      .data-cell:nth-child(2) { border-right: none; border-bottom: 1px solid var(--rule); }
+    }
+  </style>
+</head>
+<body>
+
+<!-- Top rule bar -->
+<div class="top-rule">
+  <span class="pub">Rithika Harikrishna</span>
+  <span class="section-tag">Tech · AI · Algorithms</span>
+</div>
+
+<header>
+  <span class="kicker">Tech Explained &nbsp;·&nbsp; Feb 2026 &nbsp;·&nbsp; 5 min read</span>
+  <h1>Why Instagram Feels Like It Can <em>Read Your Mind</em></h1>
+  <p class="dek">It isn't. It's doing math. But the math turns out to be weirder and more interesting than most people realize.</p>
+  <div class="byline">
+    <span><span class="name">Rithika Harikrishna</span></span>
+  </div>
+</header>
+
+<main>
+
+  <!-- Opening Hook -->
+  <div class="hook">
+    <p class="lede">You open Instagram. You scroll. First reel? <strong>Perfect.</strong> Second? <strong>Also perfect.</strong> Third? <strong>Even better.</strong></p>
+    <p class="lede">You didn't search for any of it. Nobody told the app what you were in the mood for. And yet.</p>
+    <div class="three-questions">
+      <span>Is it reading your mind?</span>
+      <span class="answer">No.</span>
+      <span>It's doing math. And the math is weirder than you think.</span>
+    </div>
+  </div>
+
+  <!-- 01 -->
+  <section>
+    <span class="section-num" aria-hidden="true">01</span>
+    <div class="section-label">The Quick Truth</div>
+    <h2>Instagram Doesn't Know You. It Guesses You.</h2>
+    <p>There's no psychologist behind the scenes building a profile of your personality. Instagram has no idea you're going through a rough week, or that you've been into cooking lately, or that you secretly love watching people fail at skateboarding tricks.</p>
+    <div class="pull-quote">
+      <p>It doesn't know you. It predicts you. Big difference.</p>
+    </div>
+    <p>What it does have is your behavior. Thousands of tiny decisions you made without thinking about them. And it turns out that's enough.</p>
+  </section>
+
+  <!-- 02 -->
+  <section>
+    <span class="section-num" aria-hidden="true">02</span>
+    <div class="section-label">What It Actually Sees</div>
+    <h2>Not Who You Are. What You Do.</h2>
+    <p>Instagram has no idea what kind of person you are. But it knows exactly what you did for the last 47 minutes. Every interaction gets logged as a signal, and some signals carry a lot more weight than others:</p>
+
+    <ul class="signal-list">
+      <li>
+        <span class="signal-icon">👁</span>
+        <span class="signal-action">Watch a reel fully</span>
+        <span class="signal-weight">High interest</span>
+      </li>
+      <li>
+        <span class="signal-icon">⚡</span>
+        <span class="signal-action">Skip in the first second</span>
+        <span class="signal-weight">Strong disinterest</span>
+      </li>
+      <li>
+        <span class="signal-icon">❤️</span>
+        <span class="signal-action">Like a post</span>
+        <span class="signal-weight">Positive signal</span>
+      </li>
+      <li>
+        <span class="signal-icon">🔖</span>
+        <span class="signal-action">Save content</span>
+        <span class="signal-weight">Very high interest</span>
+      </li>
+      <li>
+        <span class="signal-icon">🔁</span>
+        <span class="signal-action">Rewatch a video</span>
+        <span class="signal-weight">Maximum interest</span>
+      </li>
+    </ul>
+
+    <p>All of that gets stored. Your profile isn't "funny person who likes dogs." It's more like this:</p>
+
+    <div class="data-grid">
+      <div class="data-cell">
+        <div class="label">Avg Watch Time</div>
+        <div class="value">8.7s</div>
+      </div>
+      <div class="data-cell">
+        <div class="label">Save Rate</div>
+        <div class="value">High</div>
+      </div>
+      <div class="data-cell">
+        <div class="label">Skip Rate · Dance</div>
+        <div class="value">90%</div>
+      </div>
+      <div class="data-cell">
+        <div class="label">Tech Engagement</div>
+        <div class="value">Frequent</div>
+      </div>
+    </div>
+
+    <p>That's your actual profile. Not "tech-savvy millennial." Just a vector of numbers that happens to be pretty good at predicting what you'll watch next.</p>
+  </section>
+
+  <!-- 03 -->
+  <section>
+    <span class="section-num" aria-hidden="true">03</span>
+    <div class="section-label">Why It Feels Personal</div>
+    <h2>You're Not as Unique as You Think (Sorry)</h2>
+    <p>This is the part that's a little humbling. Out of hundreds of millions of users, a lot of them behave almost exactly like you. Same stuff they linger on, same stuff they skip. The algorithm figures this out and groups you together without ever asking.</p>
+    <p>So when a new video does well with the people who behave like you, you get it too. Not because Instagram knows you'd like it. Because statistically speaking, someone very similar to you already did.</p>
+    <div class="pull-quote">
+      <p>It's not reading your mind. It's reading the crowd and finding where you fit.</p>
+    </div>
+    <p>This is collaborative filtering. It's the same thing Netflix uses, the same thing Spotify uses for Discover Weekly. The reason it feels so personal is because groups of people with similar tastes are more predictable than individuals. Which is a weird thing to sit with.</p>
+  </section>
+
+  <!-- 04 -->
+  <section>
+    <span class="section-num" aria-hidden="true">04</span>
+    <div class="section-label">How Your Feed Gets Built</div>
+    <h2>Every Post Gets a Score. Specifically for You.</h2>
+    <p>Every time you open the app, Instagram runs a scoring pass over thousands of candidate posts in milliseconds. Each one gets evaluated against predictions about you specifically:</p>
+
+    <div class="prob-list">
+      <div class="prob-item">
+        <div class="prob-label"><span>Will you watch it?</span><span>Highest weight</span></div>
+        <div class="prob-bar-bg"><div class="prob-bar-fill" style="--w:88%"></div></div>
+      </div>
+      <div class="prob-item">
+        <div class="prob-label"><span>Will you like it?</span><span>High weight</span></div>
+        <div class="prob-bar-bg"><div class="prob-bar-fill" style="--w:70%"></div></div>
+      </div>
+      <div class="prob-item">
+        <div class="prob-label"><span>Will you comment?</span><span>Medium weight</span></div>
+        <div class="prob-bar-bg"><div class="prob-bar-fill" style="--w:46%"></div></div>
+      </div>
+      <div class="prob-item">
+        <div class="prob-label"><span>Will you share?</span><span>Medium weight</span></div>
+        <div class="prob-bar-bg"><div class="prob-bar-fill" style="--w:32%"></div></div>
+      </div>
+    </div>
+
+    <p>The scores get weighted, summed, and ranked. The post at the top of your feed isn't there because it's popular. It's there because the model thinks you, specifically, are most likely to stop scrolling for it.</p>
+  </section>
+
+  <!-- 05 -->
+  <section>
+    <span class="section-num" aria-hidden="true">05</span>
+    <div class="section-label">The Model Behind It</div>
+    <h2>What's Actually Running in the Background</h2>
+    <p>Instagram's recommendation system is built around a <strong>two-tower neural network</strong>. One tower encodes you — your entire behavioral history compressed into a single vector. The other tower encodes the content — visual features, caption embeddings, engagement statistics, all compressed into another vector.</p>
+    <p>The model learns to push similar user-content pairs closer together in a high-dimensional space. This is called <strong>representation learning</strong>. Instead of hand-coding rules, you let the model figure out what similarity even means from billions of interactions. The result is a geometry where "people who like this" and "this content" end up near each other, even if nobody explicitly told the model why.</p>
+
+    <div class="math-block">
+      <div class="math-row">
+        <div class="math-key">You</div>
+        <div class="math-val">a vector. your watch time, saves, skips — all of it, compressed into a single point in space.</div>
+      </div>
+      <div class="math-row">
+        <div class="math-key">The post</div>
+        <div class="math-val">another vector. visual features, audio, caption, prior engagement history.</div>
+      </div>
+      <div class="math-row">
+        <div class="math-key">Relevance</div>
+        <div class="math-val">dot product between the two. closer vectors = more relevant. that's it.</div>
+      </div>
+      <div class="math-row">
+        <div class="math-key">Speed</div>
+        <div class="math-val">approximate nearest-neighbour search (think: FAISS). billions of posts, milliseconds.</div>
+      </div>
+    </div>
+
+    <p>Gradient descent is the quiet engine behind all of it. The model makes a prediction, measures how wrong it was, nudges its weights by a tiny amount, and repeats. Do that across enough data and you get something that feels almost intuitive — even though it's just a very well-calibrated guess.</p>
+  </section>
+
+  <!-- 06 -->
+  <section>
+    <span class="section-num" aria-hidden="true">06</span>
+    <div class="section-label">Why It Adapts So Fast</div>
+    <h2>Change What You Watch. Your Feed Changes Too.</h2>
+    <p>Start watching gym content today and within a few hours your whole feed shifts. Not because Instagram decided you're a gym person now. Because your vector moved. The signals updated, the nearest-neighbour search found different candidates, and the ranking model scored them differently for the new version of you.</p>
+
+    <div class="flow">
+      <div class="flow-step accent">You watch gym reels → behavior changes</div>
+      <div class="flow-arrow">↓</div>
+      <div class="flow-step">New signals recorded → your vector shifts</div>
+      <div class="flow-arrow">↓</div>
+      <div class="flow-step">Model retrieves different candidates → interests updated</div>
+      <div class="flow-arrow">↓</div>
+      <div class="flow-step sienna">Feed updates → gym content everywhere</div>
+    </div>
+
+    <p>That speed is what makes it feel like the app knows you better than you know yourself. It doesn't. It just updates faster than your own self-image does.</p>
+  </section>
+
+  <!-- 07 -->
+  <section>
+    <span class="section-num" aria-hidden="true">07</span>
+    <div class="section-label">The Whole Thing</div>
+    <h2>It's Really Just This</h2>
+
+    <div class="flow" style="margin-top:28px;">
+      <div class="flow-step accent">You behave</div>
+      <div class="flow-arrow">↓</div>
+      <div class="flow-step">Behavior becomes vectors</div>
+      <div class="flow-arrow">↓</div>
+      <div class="flow-step">Nearest-neighbour search retrieves candidates</div>
+      <div class="flow-arrow">↓</div>
+      <div class="flow-step sienna">Ranking model scores them. Highest probability wins.</div>
+    </div>
+
+    <p style="margin-top:28px;">No magic. Just representation learning, approximate retrieval, and a ranking model that's been trained on more human attention than any of us would be comfortable thinking about.</p>
+  </section>
+
+  <!-- Finale -->
+  <div class="finale">
+    <span class="kicker">Final Thought</span>
+    <h2>Math at Scale Feels Like Magic</h2>
+    <span class="big-word">Probability.</span>
+    <p>Instagram doesn't know you. It calculates you. And when that calculation runs fast enough on enough data, it stops feeling like math and starts feeling like the app actually gets you. Now you know it doesn't.</p>
+  </div>
+
+</main>
+
+<footer>
+  <p>Written by <strong>Rithika Harikrishna</strong></p>
+  <p>
+    <a href="https://github.com/rithikahaha" target="_blank">GitHub</a>
+    &nbsp;·&nbsp;
+    <a href="https://linkedin.com/in/rithika-harikrishna" target="_blank">LinkedIn</a>
+  </p>
+</footer>
+
+<script>
+  const sections = document.querySelectorAll('section');
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) entry.target.classList.add('visible');
+    });
+  }, { threshold: 0.1 });
+  sections.forEach(s => observer.observe(s));
+</script>
+</body>
+</html>
