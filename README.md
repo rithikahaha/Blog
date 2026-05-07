@@ -14,6 +14,6 @@ them, not just nod along.
 
 Written by [Rithika Harikrishna](https://linkedin.com/in/rithika-harikrishna) — 
 CS graduate interested in ML systems, data engineering, and making technical 
-ideas accessible without dumbing them down.
+ideas accessible without dumping them down.
 
 [GitHub](https://github.com/rithikahaha) · [LinkedIn](https://linkedin.com/in/rithika-harikrishna)
